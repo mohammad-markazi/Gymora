@@ -21,6 +21,7 @@ namespace Gymora.Service
             services.AddScoped<IVerifyCodeService, VerifyCodeService>();
             services.AddScoped<IAuthService,AuthService>();
             services.AddScoped<ILogService,LogService>();
+            services.AddScoped<IUserService, UserService>();
 
 
             return services;

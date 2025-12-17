@@ -1,6 +1,8 @@
-﻿using Gymora.Service.User;
+﻿using Gymora.Database.Entities;
+using Gymora.Service.User;
 using Gymora.Service.User.Messaging;
 using Gymora.Service.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +10,7 @@ namespace Gymora.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController(IAuthService authService,IVerifyCodeService verifyCodeService) : ControllerBase
+    public class UserController(IAuthService authService,IVerifyCodeService verifyCodeService,IUserService userService) : ControllerBase
     {
         [HttpPost("VerifyCode")]
         public async Task<IActionResult> SendVerifyCode(SendVerifyCodeRequest request, CancellationToken cancellationToken)
@@ -22,8 +24,29 @@ namespace Gymora.Presentation.Controllers
         {
             var checkCode = verifyCodeService.VerifyCode(new VerifyCodeViewModel()
                 { PhoneNumber = request.PhoneNumber, Code = request.Code });
-            return Ok(!checkCode ? ResponseFactory.Fail("کد وارد شده نامعتبر میباشد") : ResponseFactory.Success());
+            if (!checkCode) return Ok(ResponseFactory.Fail("کد وارد شده نامعتبر میباشد"));
+           
+            var user = userService.GetByUsername(request.PhoneNumber) ?? userService.Create(new CreateUserRequest()
+            {
+                PhoneNumber = request.PhoneNumber,
+                UserType = UserType.Coach,
+                Username = request.PhoneNumber,
+                Coach = new CoachModel()
+            }).Data;
+
+            var token= authService.GenerateToken(user);
+            return Ok(ResponseFactory.Success<string>(token));
+
         }
+
+        [HttpPut]
+        [Authorize]
+        public IActionResult EditUser(EditUserRequest request)
+        {
+            request.UserId = authService.GetCurrentUserId();
+            return Ok(userService.Edit(request));
+        }
+
 
     }
 }
