@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gymora.Database;
+using Gymora.Service.Movement;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ namespace Gymora.Service
             services.AddScoped<IAuthService,AuthService>();
             services.AddScoped<ILogService,LogService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IMovementService, MovementService>();
 
 
             return services;

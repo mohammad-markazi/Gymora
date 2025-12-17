@@ -14,5 +14,6 @@ namespace Gymora.Service.User
         int GetCurrentUserId();
         string GetCurrentUserFullName();
         string GetCurrentUsername();
+        int GetCurrentCoachId();
     }
 }
