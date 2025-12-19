@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gymora.Database.Entities.Utility;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -17,5 +18,6 @@ namespace Gymora.Database.Entities
         [ForeignKey(nameof(CreateCoachId))]
         public CoachModel  Coach{ get; set; }
         public bool IsActive { get; set; }
+        public List<QuestionModel> Questions { get; set; }
     }
 }
