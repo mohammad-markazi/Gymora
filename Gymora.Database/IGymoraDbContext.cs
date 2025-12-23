@@ -17,6 +17,7 @@ namespace Gymora.Database
         DbSet<SystemLog> SystemLogs { get; set; } 
         DbSet<MovementModel> MovementModels{ get; set; }
         DbSet<QuestionModel> QuestionModels { get; set; }
+        DbSet<VideoMovementModel> VideoMovementModels { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

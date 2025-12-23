@@ -16,6 +16,7 @@ namespace Gymora.Database
         public DbSet<SystemLog> SystemLogs { get; set; }
         public DbSet<MovementModel> MovementModels { get; set; }
         public DbSet<QuestionModel> QuestionModels { get; set; }
+        public DbSet<VideoMovementModel> VideoMovementModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

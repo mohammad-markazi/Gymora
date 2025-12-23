@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Gymora.Database;
+using Gymora.Service.Common;
 using Gymora.Service.Movement;
 using Gymora.Service.Question;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
+using Gymora.Service.VideoMovement;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +28,8 @@ namespace Gymora.Service
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IMovementService, MovementService>();
             services.AddScoped<IQuestionService, QuestionService>();
+            services.AddScoped<IVideoMovementService, VideoMovementService>();
+            services.AddScoped<IFileUploader, FileUploader>();
 
             return services;
         }
