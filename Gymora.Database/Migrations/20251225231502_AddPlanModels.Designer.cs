@@ -4,6 +4,7 @@ using Gymora.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Gymora.Database.Migrations
 {
     [DbContext(typeof(GymoraDbContext))]
-    partial class GymoraDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251225231502_AddPlanModels")]
+    partial class AddPlanModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,12 +116,6 @@ namespace Gymora.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CreateCoachId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Files")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");
@@ -127,18 +124,12 @@ namespace Gymora.Database.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime?>("ModifiedDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<byte>("Number")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("PhoneNumber")
                         .HasMaxLength(11)
                         .HasColumnType("nvarchar(11)");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
 
                     b.Property<byte>("Weight")
                         .HasColumnType("tinyint");

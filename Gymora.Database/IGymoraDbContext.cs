@@ -18,6 +18,10 @@ namespace Gymora.Database
         DbSet<MovementModel> MovementModels{ get; set; }
         DbSet<QuestionModel> QuestionModels { get; set; }
         DbSet<VideoMovementModel> VideoMovementModels { get; set; }
+        DbSet<PlanModel> PlanModels { get; set; }
+        DbSet<PlanQuestionModel> PlanQuestionModels { get; set; }
+        DbSet<PlanDetailModel> PlanDetailModels { get; set; }
+        DbSet<PlanMovementModel> PlanMovementModels { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 

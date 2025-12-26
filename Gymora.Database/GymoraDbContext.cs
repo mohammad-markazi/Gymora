@@ -17,6 +17,10 @@ namespace Gymora.Database
         public DbSet<MovementModel> MovementModels { get; set; }
         public DbSet<QuestionModel> QuestionModels { get; set; }
         public DbSet<VideoMovementModel> VideoMovementModels { get; set; }
+        public DbSet<PlanModel> PlanModels { get; set; }
+        public DbSet<PlanQuestionModel> PlanQuestionModels { get; set; }
+        public DbSet<PlanDetailModel> PlanDetailModels { get; set; }
+        public DbSet<PlanMovementModel> PlanMovementModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
