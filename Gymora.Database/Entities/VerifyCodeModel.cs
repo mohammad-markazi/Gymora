@@ -5,7 +5,7 @@ namespace Gymora.Database.Entities
     public class VerifyCodeModel
     {
         public int Id { get; set; }
-        [MaxLength(5)]
+        [MaxLength(20)]
         public string Code { get; set; }
         [MaxLength(11)]
         public string PhoneNumber { get; set; }

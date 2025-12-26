@@ -53,8 +53,8 @@ namespace Gymora.Presentation
 
                 await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
-                    Message = "خطای داخلی سرور رخ داده است",
-                    TrackingCode = tracking
+                    success=false,
+                    message = $"شماره رهگیری:{tracking} خطایی در سرور رخ داده"
                 }));
             }
         }

@@ -1,17 +1,74 @@
 ﻿using Gymora.Database;
 using Gymora.Database.Entities;
+using Gymora.Service.Common;
 using Gymora.Service.Plan.Messaging;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gymora.Service.Plan;
 
-public class PlanService(IGymoraDbContext context,IAuthService authService) : IPlanService
+public class PlanService(IGymoraDbContext context, IAuthService authService, IFileUploader fileUploader) : IPlanService
 {
-    public Task<ApiResponse> CreateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<int>> CreateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var coachId = authService.GetCurrentCoachId();
+        var files = new List<string>();
+        if (request.Files is { Count: > 0 })
+        {
+            async void Action(IFormFile item)
+            {
+                var path = await fileUploader.Upload(item, "BodyFiles");
+                files.Add(path);
+            }
+
+            request.Files.ForEach(Action);
+        }
+        else
+            files.Add(fileUploader.GetPathImageNotFound());
+
+
+        var entity = new PlanModel()
+        {
+            FullName = request.FullName,
+            PhoneNumber = request.PhoneNumber,
+            ModifiedDateTime = DateTime.Now,
+            CreateCoachId = coachId,
+            Number = request.Number,
+            Status = PlanStatus.Unknown,
+            Weight = request.Weight,
+            WeakMuscle = request.WeakMuscle,
+            Files = files
+        };
+        if (request.Questions.Any())
+        {
+            entity.Questions ??= new List<PlanQuestionModel>();
+            request.Questions.ForEach(item =>
+            {
+                entity.Questions.Add(new PlanQuestionModel()
+                {
+                    Answer = item.Answer,
+                    QuestionId = item.QuestionId,
+                    IsActive = true
+                });
+            });
+        }
+
+        entity.PlanDetails ??= new List<PlanDetailModel>();
+        for (byte i = 1; i <= 5; i++)
+        {
+            entity.PlanDetails.Add(new PlanDetailModel()
+            {
+                Complete = false,
+                Number = i,
+                IsActive = true
+            });
+        }
+
+        await context.PlanModels.AddAsync(entity, cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
+        return ResponseFactory.Success(entity.Id);
     }
 
     public Task<ApiResponse> UpdateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
@@ -34,7 +91,7 @@ public class PlanService(IGymoraDbContext context,IAuthService authService) : IP
 
         if (status is not null)
             models = models.Where(x => x.Status == status);
-        var data=await models.ToListAsync(cancellationToken);
+        var data = await models.ToListAsync(cancellationToken);
         return ResponseFactory.Success(data);
     }
 
@@ -42,13 +99,13 @@ public class PlanService(IGymoraDbContext context,IAuthService authService) : IP
     {
         var coachId = authService.GetCurrentCoachId();
 
-        var planModel =await context.PlanModels.AsNoTracking()
+        var planModel = await context.PlanModels.AsNoTracking()
             .Include(x => x.PlanDetails)
             .ThenInclude(x => x.PlanMovements)
-            .ThenInclude(x=>x.Movement)
+            .ThenInclude(x => x.Movement)
             .Include(x => x.Questions)
-            .ThenInclude(x=>x.Question)
-            .SingleOrDefaultAsync(x=>x.Id==id && x.CreateCoachId==coachId,cancellationToken);
+            .ThenInclude(x => x.Question)
+            .SingleOrDefaultAsync(x => x.Id == id && x.CreateCoachId == coachId, cancellationToken);
         if (planModel is null)
             return ResponseFactory.Fail<PlanByIdViewModel>("برنامه یافت نشد");
         var planViewModel = new PlanByIdViewModel()

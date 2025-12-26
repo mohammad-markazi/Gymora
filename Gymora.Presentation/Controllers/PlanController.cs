@@ -1,5 +1,6 @@
 ﻿using Gymora.Database.Entities;
 using Gymora.Service.Plan;
+using Gymora.Service.Plan.Messaging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,5 +26,11 @@ namespace Gymora.Presentation.Controllers
             return Ok(result);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm] CreatePlanRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planService.CreateAsync(request, cancellationToken);
+            return Ok(result);
+        }
     }
 }

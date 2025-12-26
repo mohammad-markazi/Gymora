@@ -25,12 +25,9 @@ namespace Gymora.Database
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserModel>()
-                .HasOne(x => x.Coach)
-                .WithOne(x => x.User).HasForeignKey<UserModel>(x=>x.CoachId);
-
-            modelBuilder.Entity<CoachModel>()
-                .HasOne(x => x.User)
-                .WithOne(x => x.Coach).HasForeignKey<CoachModel>(x => x.UserId);
+                .HasOne(u => u.Coach)
+                .WithOne(c => c.User)
+                .HasForeignKey<CoachModel>(c => c.UserId);
 
             base.OnModelCreating(modelBuilder);
         }

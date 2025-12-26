@@ -19,7 +19,7 @@ namespace Gymora.Service.User
         }
         public UserModel? GetByUsername(string username)
         {
-            return context.Users.AsNoTracking().FirstOrDefault(x => x.Username == username);
+            return context.Users.Include(x=>x.Coach).AsNoTracking().FirstOrDefault(x => x.Username == username);
         }
 
         public ApiResponse<UserModel> Create(CreateUserRequest request)
@@ -31,8 +31,9 @@ namespace Gymora.Service.User
                 UserType = request.UserType,
                 Coach = request.Coach
             };
+            userModel.Coach.User = userModel;
             context.Users.Add(userModel);
-            context.SaveChangesAsync(CancellationToken.None);
+            context.SaveChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
             return ResponseFactory.Success(userModel);
         }
 
@@ -42,6 +43,7 @@ namespace Gymora.Service.User
             if (user is null)
                 return ResponseFactory.Fail("کاربر یافت نشد");
             user.FullName = request.FullName;
+            context.SaveChangesAsync(CancellationToken.None).GetAwaiter().GetResult();
             return ResponseFactory.Success();
         }
     }

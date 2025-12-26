@@ -20,8 +20,7 @@ namespace Gymora.Database.Entities
         public bool IsActive { get; set; }
         public DateTime CreateDateTime { get; set; } = DateTime.Now;
         public DateTime? LastLoginDate { get; set; }
-        public int? CoachId { get; set; }
-        public CoachModel? Coach { get; set; }
+        public CoachModel Coach { get; set; }
 
 
     }

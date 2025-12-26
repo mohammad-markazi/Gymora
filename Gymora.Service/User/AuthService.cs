@@ -31,12 +31,13 @@ namespace Gymora.Service.User
 
         public string GenerateToken(UserModel userModel)
         {
+
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, userModel.Id.ToString()),
                 new Claim(ClaimTypes.Name, userModel.Username),
-                new Claim("CoachId", (userModel.CoachId ?? 0).ToString()),
-                new Claim("FullName", userModel.FullName),
+                new Claim("CoachId", (userModel.Coach.Id).ToString()),
+                new Claim("FullName", userModel.FullName ?? ""),
             };
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Your_Secret_Key_Here_this_is_program_sport_for_gymora"));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);

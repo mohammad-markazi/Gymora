@@ -31,8 +31,15 @@ namespace Gymora.Presentation.Controllers
                 PhoneNumber = request.PhoneNumber,
                 UserType = UserType.Coach,
                 Username = request.PhoneNumber,
-                Coach = new CoachModel()
+                Coach = new CoachModel
+                {
+                    ProgramComplete = 0,
+                    ProgramRequested = 0,
+                    ProgramImperfect = 0,
+                    ProgramSet = 0
+                }
             }).Data;
+
 
             var token= authService.GenerateToken(user);
             return Ok(ResponseFactory.Success<string>(token));

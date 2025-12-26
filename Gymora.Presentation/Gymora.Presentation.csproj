@@ -22,4 +22,9 @@
     <ProjectReference Include="..\Gymora.Service\Gymora.Service.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\BodyFiles\" />
+    <Folder Include="wwwroot\MovementVideo\" />
+  </ItemGroup>
+
 </Project>
