@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using ErrorHandlingMiddleware = Gymora.Presentation.ErrorHandlingMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,6 +65,10 @@ builder.Services.AddDatabaseConfigService(builder.Configuration);
 builder.Services.AddServiceConfigService(builder.Configuration);
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetRequiredService<GymoraDbContext>()?.Database.Migrate();
+}
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseSwagger();
