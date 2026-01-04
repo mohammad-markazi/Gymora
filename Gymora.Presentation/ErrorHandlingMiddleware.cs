@@ -28,6 +28,7 @@ namespace Gymora.Presentation
                     // ریست کردن تا کنترلر بتواند دوباره بخواند
                     context.Request.Body.Position = 0;
                 }
+
                 await _next(context);
             }
             catch (Exception ex)
@@ -54,9 +55,11 @@ namespace Gymora.Presentation
                 await context.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(new
                 {
                     success=false,
-                    message = $"شماره رهگیری:{tracking} خطایی در سرور رخ داده"
+                    message = $"شماره رهگیری:{tracking} خطایی در سرور رخ داده",
+                    statusCode=ApiStatusCode.InternalServerError
                 }));
             }
         }
+
     }
 }

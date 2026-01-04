@@ -8,40 +8,44 @@ namespace Gymora.Service.Utilities
 {
     public static class ResponseFactory
     {
-        public static ApiResponse<T> Success<T>(T data, string message = null, int statusCode = 200)
+        public static ApiResponse<T> Success<T>(T data, string message = null, ApiStatusCode statusCode = ApiStatusCode.Ok)
         {
             return new ApiResponse<T>
             {
                 Success = true,
                 Data = data,
-                Message = message
+                Message = message,
+                StatusCode = statusCode
             };
         }
-        public static ApiResponse Success(string message = "عملیات با موفقیت انجام شد")
+        public static ApiResponse Success(string message = "عملیات با موفقیت انجام شد",ApiStatusCode statusCode=ApiStatusCode.Ok)
         {
             return new ApiResponse
             {
                 Success = true,
-                Message = message
+                Message = message,
+                StatusCode = statusCode
             };
         }
-        public static ApiResponse Fail(string message,object? errors=null)
+        public static ApiResponse Fail(string message,List<string>? errors=null,ApiStatusCode statusCode=ApiStatusCode.ValidationError)
         {
             return new ApiResponse
             {
                 Success = false,
                 Message = message,
-                Errors = errors ?? message
+                Errors = errors ?? new List<string>(){message},
+                StatusCode = statusCode
             };
         }
-        public static ApiResponse<T?> Fail<T>(string message, object errors = null, int statusCode = 400)
+        public static ApiResponse<T?> Fail<T>(string message, List<string>? errors = null, ApiStatusCode statusCode=ApiStatusCode.ValidationError)
         {
             return new ApiResponse<T?>
             {
                 Success = false,
                 Data = default,
                 Message = message,
-                Errors = errors
+                Errors = errors ?? new List<string>() { message },
+                StatusCode = statusCode
             };
         }
     }

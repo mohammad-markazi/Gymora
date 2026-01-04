@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ErrorHandlingMiddleware = Gymora.Presentation.ErrorHandlingMiddleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +58,45 @@ builder.Services.AddAuthentication(options =>
         ValidAudience = "http://localhost:36145/",
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("Your_Secret_Key_Here_this_is_program_sport_for_gymora"))
     };
+    options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+    {
+        OnChallenge = async context =>
+        {
+            // جلوگیری از پاسخ پیش‌فرض
+            context.HandleResponse();
+
+            var response = ResponseFactory.Fail(
+                message: "احراز هویت انجام نشد",
+                statusCode: ApiStatusCode.Unauthorized
+            );
+
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            context.Response.ContentType = "application/json";
+
+            var json = JsonConvert.SerializeObject(response, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            await context.Response.WriteAsync(json);
+        },
+        OnForbidden = async context =>
+        {
+            var response = ResponseFactory.Fail(
+                message: "شما دسترسی لازم برای این عملیات را ندارید",
+                statusCode: ApiStatusCode.Forbidden
+            );
+
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            context.Response.ContentType = "application/json";
+
+            var json = JsonConvert.SerializeObject(response, new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            await context.Response.WriteAsync(json);
+        }
+    };
+
 });
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
