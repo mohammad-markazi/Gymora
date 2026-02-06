@@ -10,7 +10,6 @@ namespace Gymora.Presentation.Controllers
     [ApiController]
     public class PlanController(IPlanService planService) : ControllerBase
     {
-        [Route("{status}")]
         [Route("")]
         [HttpGet]
         public async Task<IActionResult> GetAll(PlanStatus? status, CancellationToken cancellationToken)
