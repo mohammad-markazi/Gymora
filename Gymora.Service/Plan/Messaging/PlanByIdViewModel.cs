@@ -16,6 +16,7 @@ namespace Gymora.Service.Plan.Messaging
         public string FullName { get; set; }
         public List<string> Files { get; set; }
         public byte Weight { get; set; }
+        public PlanStatus Status { get; set; }
         public byte Number { get; set; }
         public IEnumerable<short> WeakMuscle { get; set; }=new List<short>();
         public List<PlanQuestionViewModel> Questions { get; set; }= new List<PlanQuestionViewModel>();

@@ -119,6 +119,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             Id = planModel.Id,
             Files = planModel.Files,
             FullName = planModel.FullName,
+            Status = planModel.Status,
             Number = planModel.Number,
             Weight = planModel.Weight,
             WeakMuscle = planModel.WeakMuscle.SeparateBinaries(),
