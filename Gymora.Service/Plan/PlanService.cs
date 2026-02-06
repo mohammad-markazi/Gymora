@@ -78,7 +78,17 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
 
     public async Task<ApiResponse<List<PlanViewModel>>> GetAllAsync(PlanStatus? status, CancellationToken cancellationToken)
     {
-        var models = context.PlanModels.AsNoTracking()
+        var coachId = authService.GetCurrentCoachId();
+
+        var models = context.PlanModels
+            .Where(x=>x.CreateCoachId==coachId).AsNoTracking();
+
+        if (status is not null)
+            models = models.Where(x => x.Status == status);
+
+        var plans =await models.ToListAsync(cancellationToken);
+
+        var data = plans
             .Select(x => new PlanViewModel()
             {
                 Id = x.Id,
@@ -87,11 +97,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
                 FilePath = x.Files.First(),
                 CreateDate = x.CreateDateTime.ToRelativeTime(),
                 Status = x.Status
-            });
-
-        if (status is not null)
-            models = models.Where(x => x.Status == status);
-        var data = await models.ToListAsync(cancellationToken);
+            }).ToList();
         return ResponseFactory.Success(data);
     }
 
