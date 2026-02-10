@@ -4,7 +4,6 @@ using Gymora.Service.Common;
 using Gymora.Service.Plan.Messaging;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gymora.Service.Plan;
@@ -14,20 +13,8 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
     public async Task<ApiResponse<int>> CreateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
     {
         var coachId = authService.GetCurrentCoachId();
-        var files = new List<string>();
-        if (request.Files is { Count: > 0 })
-        {
-            async void Action(IFormFile item)
-            {
-                var path = await fileUploader.Upload(item, "BodyFiles");
-                files.Add(path);
-            }
-
-            request.Files.ForEach(Action);
-        }
-        else
-            files.Add(fileUploader.GetPathImageNotFound());
-
+        if (!request.Files.Any())
+            request.Files.Add(fileUploader.GetPathImageNotFound());
 
         var entity = new PlanModel()
         {
@@ -35,13 +22,13 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             PhoneNumber = request.PhoneNumber,
             ModifiedDateTime = DateTime.Now,
             CreateCoachId = coachId,
-            Number = request.Number,
+            Number = request.Number ?? 0,
             Status = PlanStatus.Unknown,
-            Weight = request.Weight,
+            Weight = request.Weight ?? 0,
             WeakMuscle = request.WeakMuscle,
-            Files = files
+            Files = request.Files
         };
-        if (request.Questions.Any())
+        if (request.Questions is {Count:>0})
         {
             entity.Questions ??= new List<PlanQuestionModel>();
             request.Questions.ForEach(item =>
@@ -71,9 +58,42 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
         return ResponseFactory.Success(entity.Id);
     }
 
-    public Task<ApiResponse> UpdateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
+    public async Task<ApiResponse> UpdateAsync(EditPlanRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var coachId = authService.GetCurrentCoachId();
+
+        var plan = await context.PlanModels.Include(x => x.PlanDetails)
+            .Include(x => x.Questions)
+            .SingleOrDefaultAsync(x => x.CreateCoachId == coachId && x.Id == request.Id, cancellationToken);
+
+        if (plan is null)
+            return ResponseFactory.Fail("برنامه یافت نشد");
+
+        plan.FullName = request.FullName ?? plan.FullName;
+        plan.PhoneNumber = request.PhoneNumber ?? plan.PhoneNumber;
+        plan.Number = request.Number ?? plan.Number;
+        plan.Weight = request.Weight ?? plan.Weight;
+        plan.WeakMuscle = request.WeakMuscle ?? plan.WeakMuscle;
+        plan.ModifiedDateTime = DateTime.Now;
+        plan.Files = request.Files ?? plan.Files;
+
+        if (request.Questions is { Count: > 0 })
+        {
+            plan.Questions.ForEach(x => x.IsActive = false);
+
+            request.Questions.ForEach(item =>
+            {
+                plan.Questions.Add(new PlanQuestionModel()
+                {
+                    Answer = item.Answer,
+                    QuestionId = item.QuestionId,
+                    IsActive = true
+                });
+            });
+        }
+
+        await context.SaveChangesAsync(cancellationToken);
+        return ResponseFactory.Success();
     }
 
     public async Task<ApiResponse<List<PlanViewModel>>> GetAllAsync(PlanStatus? status, CancellationToken cancellationToken)
@@ -81,12 +101,12 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
         var coachId = authService.GetCurrentCoachId();
 
         var models = context.PlanModels
-            .Where(x=>x.CreateCoachId==coachId).AsNoTracking();
+            .Where(x => x.CreateCoachId == coachId).AsNoTracking();
 
         if (status is not null)
             models = models.Where(x => x.Status == status);
 
-        var plans =await models.ToListAsync(cancellationToken);
+        var plans = await models.ToListAsync(cancellationToken);
 
         var data = plans
             .Select(x => new PlanViewModel()
@@ -124,7 +144,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             Weight = planModel.Weight,
             WeakMuscle = planModel.WeakMuscle.SeparateBinaries(),
             PhoneNumber = planModel.PhoneNumber,
-            Questions = planModel.Questions.Select(x => new PlanQuestionViewModel()
+            Questions = planModel.Questions.Where(x => x.IsActive).Select(x => new PlanQuestionViewModel()
             {
                 Answer = x.Answer,
                 Question = x.Question.Body,

@@ -1,7 +1,6 @@
 ﻿using Gymora.Database.Entities;
 using Gymora.Service.Plan;
 using Gymora.Service.Plan.Messaging;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gymora.Presentation.Controllers
@@ -26,9 +25,15 @@ namespace Gymora.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CreatePlanRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> Create(CreatePlanRequest request, CancellationToken cancellationToken)
         {
             var result = await planService.CreateAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update(EditPlanRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planService.UpdateAsync(request, cancellationToken);
             return Ok(result);
         }
     }
