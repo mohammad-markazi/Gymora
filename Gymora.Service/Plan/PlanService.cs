@@ -13,8 +13,6 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
     public async Task<ApiResponse<int>> CreateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
     {
         var coachId = authService.GetCurrentCoachId();
-        if (request.Files is {Count:<=0})
-            request.Files.Add(fileUploader.GetPathImageNotFound());
 
         var entity = new PlanModel()
         {
@@ -26,7 +24,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             Status = PlanStatus.Unknown,
             Weight = request.Weight ?? 0,
             WeakMuscle = request.WeakMuscle,
-            Files = request.Files
+            Files = request.Files ?? new List<string>()
         };
         if (request.Questions is {Count:>0})
         {
@@ -114,7 +112,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
                 Id = x.Id,
                 FullName = x.FullName,
                 Weight = x.Weight,
-                FilePath = x.Files.First(),
+                FilePath =x.Files.Any()? x.Files.First():fileUploader.GetPathImageNotFound(),
                 CreateDate = x.CreateDateTime.ToRelativeTime(),
                 Status = x.Status
             }).ToList();
@@ -137,7 +135,10 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
         var planViewModel = new PlanByIdViewModel()
         {
             Id = planModel.Id,
-            Files = planModel.Files,
+            Files =planModel.Files.Any()? planModel.Files:new List<string>()
+            {
+                fileUploader.GetPathImageNotFound()
+            },
             FullName = planModel.FullName,
             Status = planModel.Status,
             Number = planModel.Number,
