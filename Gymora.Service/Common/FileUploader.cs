@@ -13,7 +13,7 @@ public class FileUploader:IFileUploader
         _webHostEnvironment = webHostEnvironment;
     }
 
-    public string GetPathImageNotFound() => Path.Combine(_webHostEnvironment.WebRootPath, "Image-not-found.png");
+    public string GetPathImageNotFound() => Path.Combine("Image-not-found.png");
     public async Task<string> Upload(IFormFile file, params string[] paths)
     {
 

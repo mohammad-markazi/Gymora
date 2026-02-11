@@ -13,7 +13,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
     public async Task<ApiResponse<int>> CreateAsync(CreatePlanRequest request, CancellationToken cancellationToken)
     {
         var coachId = authService.GetCurrentCoachId();
-        if (!request.Files.Any())
+        if (request.Files is {Count:<=0})
             request.Files.Add(fileUploader.GetPathImageNotFound());
 
         var entity = new PlanModel()
