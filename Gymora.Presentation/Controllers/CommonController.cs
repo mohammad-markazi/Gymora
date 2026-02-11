@@ -1,5 +1,6 @@
 ﻿using Gymora.Service.Common;
 using Gymora.Service.Utilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +13,13 @@ namespace Gymora.Presentation.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Upload([FromForm]UploadFileRequest request,CancellationToken cancellationToken)
         {
-          var result=await  fileUploader.Upload(request.File, request.Paths.ToArray());
-          return Ok(ResponseFactory.Success<string>(result));
+            var paths = new List<string>();
+            foreach (var item in request.Files)
+            {
+                var result = await fileUploader.Upload(item, request.Paths.ToArray());
+                paths.Add(result);
+            }
+            return Ok(ResponseFactory.Success<List<string>>(paths));
         }
     }
 }

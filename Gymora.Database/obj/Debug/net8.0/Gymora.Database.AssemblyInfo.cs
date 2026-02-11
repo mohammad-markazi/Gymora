@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gymora.Database")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5948cc806129638dc1f056db39ef0b3c8410b5d2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fcacb2d4e84494afb482aa3273dd3fe0d3a2eb48")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gymora.Database")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gymora.Database")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
