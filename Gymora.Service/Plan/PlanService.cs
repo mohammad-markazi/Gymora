@@ -155,18 +155,111 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             {
                 Complete = x.Complete,
                 Number = x.Number,
-                Movements = x.PlanMovements.Select(y => new PlanMovementViewModel()
-                {
-                    Code = y.Code,
-                    Count = y.Count,
-                    Description = y.Description,
-                    Id = y.Id,
-                    Movement = y.Movement,
-                    MovementId = y.MovementId,
-                    Set = y.Set
-                }).ToList()
+                Movements = MapPlanMovementsToViewModel(x.PlanMovements).ToList()
             }).ToList()
         };
         return ResponseFactory.Success(planViewModel);
+    }
+
+    public async Task<ApiResponse> AddMovementToPlan(PlanDetailMovementRequest request, CancellationToken cancellationToken)
+    {
+        var coachId = authService.GetCurrentCoachId();
+        var planDetail =await 
+            context.PlanDetailModels.SingleOrDefaultAsync(
+                x => x.Id == request.PlanDetailId && x.Plan.CreateCoachId == coachId, cancellationToken);
+        if (planDetail is null)
+            return ResponseFactory.Fail("برنامه زمانی یافت نشد");
+
+        var planMovements = MapRequestToModel(request.Movements, request.PlanDetailId);
+        planDetail.PlanMovements = planMovements;
+       await context.SaveChangesAsync(cancellationToken);
+       return ResponseFactory.Success();
+    }
+
+    private List<PlanMovementViewModel> MapPlanMovementsToViewModel(List<PlanMovementModel> movements)
+    {
+        var result = new List<PlanMovementViewModel>();
+
+        var parents = movements.Where(m => m.ParentId == null).ToList();
+
+        foreach (var parent in parents)
+        {
+            result.Add(new PlanMovementViewModel
+            {
+                Id = parent.Id,
+                MovementId = parent.MovementId,
+                Movement = parent.Movement,
+                Code = parent.Id,
+                Parent = true,
+                OrderBy = 0,
+                Pattern = parent.Pattern,
+                Description = parent.Description
+            });
+
+            var children = movements
+                .Where(m => m.ParentId == parent.Id)
+                .OrderBy(m => m.Id)
+                .ToList();
+
+            for (int i = 0; i < children.Count; i++)
+            {
+                result.Add(new PlanMovementViewModel
+                {
+                    Id = children[i].Id,
+                    MovementId = children[i].MovementId,
+                    Movement = children[i].Movement,
+                    Code = parent.Id, 
+                    Parent = false,
+                    OrderBy = i + 1,
+                    Pattern = children[i].Pattern,
+                    Description = children[i].Description
+                });
+            }
+        }
+
+        return result;
+    }
+    private List<PlanMovementModel> MapRequestToModel(List<AddPlanDetailMovementRequest> requests, int planDetailId)
+    {
+        var finalModels = new List<PlanMovementModel>();
+
+        var groupedRequests = requests.GroupBy(r => r.Code);
+
+        foreach (var group in groupedRequests)
+        {
+            var parentReq = group.FirstOrDefault(x => x.Parent);
+
+            PlanMovementModel parentModel = null;
+            if (parentReq != null)
+            {
+                parentModel = new PlanMovementModel
+                {
+                    PlanDetailId = planDetailId,
+                    MovementId = parentReq.MovementId,
+                    Pattern = parentReq.Pattern,
+                    Description = parentReq.Description,
+                    IsActive = true,
+                };
+                finalModels.Add(parentModel);
+            }
+
+            var childrenReqs = group.Where(x => x.Parent == false).OrderBy(x => x.OrderBy);
+
+            foreach (var childReq in childrenReqs)
+            {
+                var childModel = new PlanMovementModel
+                {
+                    PlanDetailId = planDetailId,
+                    MovementId = childReq.MovementId,
+                    Pattern = childReq.Pattern,
+                    Description = childReq.Description,
+                    IsActive = true,
+                    Parent = parentModel
+                };
+                finalModels.Add(childModel);
+            }
+        }
+
+        return finalModels;
     }
 }

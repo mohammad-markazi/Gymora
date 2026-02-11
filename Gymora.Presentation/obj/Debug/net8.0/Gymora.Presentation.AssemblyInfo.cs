@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Gymora.Presentation")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aa6f43c4c5c3510be4188516e8587a783dce129d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cbe0ebefe2d507592f63ce1e8bf51c984d2b13a6")]
 [assembly: System.Reflection.AssemblyProductAttribute("Gymora.Presentation")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Gymora.Presentation")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

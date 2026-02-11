@@ -36,5 +36,13 @@ namespace Gymora.Presentation.Controllers
             var result = await planService.UpdateAsync(request, cancellationToken);
             return Ok(result);
         }
+
+        [HttpPost("Movement")]
+        public async Task<IActionResult> AddMovementToPlanDetail(PlanDetailMovementRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planService.AddMovementToPlan(request, cancellationToken);
+            return Ok(result);
+        }
+
     }
 }
