@@ -155,7 +155,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             {
                 Complete = x.Complete,
                 Number = x.Number,
-                Movements = MapPlanMovementsToViewModel(x.PlanMovements).ToList()
+                Movements = MapPlanMovementsToViewModel(x.PlanMovements.Where(y=>y.IsActive).ToList()).ToList()
             }).ToList()
         };
         return ResponseFactory.Success(planViewModel);
