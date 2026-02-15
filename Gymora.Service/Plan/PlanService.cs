@@ -143,7 +143,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             Status = planModel.Status,
             Number = planModel.Number,
             Weight = planModel.Weight,
-            WeakMuscle = planModel.WeakMuscle.SeparateBinaries(),
+            WeakMuscle =planModel.WeakMuscle !=null? planModel.WeakMuscle.SeparateBinaries():new List<short>(),
             PhoneNumber = planModel.PhoneNumber,
             Questions = planModel.Questions.Where(x => x.IsActive).Select(x => new PlanQuestionViewModel()
             {
