@@ -9,6 +9,7 @@ namespace Gymora.Service.Plan.Messaging
 {
     public class PlanDetailViewModel
     {
+        public int Id { get; set; }
         public byte Number { get; set; }
         public bool Complete { get; set; }
         public List<PlanMovementViewModel> Movements { get; set; }

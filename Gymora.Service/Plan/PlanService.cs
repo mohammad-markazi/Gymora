@@ -153,6 +153,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             }).ToList(),
             Details = planModel.PlanDetails.Select(x => new PlanDetailViewModel()
             {
+                Id = x.Id,
                 Complete = x.Complete,
                 Number = x.Number,
                 Movements = MapPlanMovementsToViewModel(x.PlanMovements.Where(y=>y.IsActive).ToList()).ToList()
