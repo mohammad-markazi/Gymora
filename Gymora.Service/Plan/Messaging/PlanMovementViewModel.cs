@@ -12,12 +12,13 @@ namespace Gymora.Service.Plan.Messaging
     {
         public int Id { get; set; }
         public int MovementId { get; set; }
+        public int MovementName { get; set; }
+
         public int Code { get; set; }
         public int OrderBy { get; set; }
         public string Pattern { get; set; }
         public string Description { get; set; }
         public bool Parent { get; set; }
-        public MovementViewModel Movement { get; set; }
  
     }
 }

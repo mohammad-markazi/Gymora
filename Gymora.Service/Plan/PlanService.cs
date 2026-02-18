@@ -190,11 +190,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             {
                 Id = parent.Id,
                 MovementId = parent.MovementId,
-                Movement = new MovementViewModel()
-                {
-                    Id = parent.Movement.Id,
-                    Name = parent.Movement.Name
-                },
+                MovementName = parent.Movement.Name,
                 Code = parent.Id,
                 Parent = true,
                 OrderBy = 0,
@@ -213,11 +209,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
                 {
                     Id = children[i].Id,
                     MovementId = children[i].MovementId,
-                    Movement = new MovementViewModel()
-                    {
-                        Id = children[i].Movement.Id,
-                        Name = children[i].Movement.Name
-                    },
+                    MovementName = children[i].Movement.Name,
                     Code = parent.Id, 
                     Parent = false,
                     OrderBy = i + 1,
