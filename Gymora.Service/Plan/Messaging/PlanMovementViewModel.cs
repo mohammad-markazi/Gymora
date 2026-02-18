@@ -12,7 +12,7 @@ namespace Gymora.Service.Plan.Messaging
     {
         public int Id { get; set; }
         public int MovementId { get; set; }
-        public int MovementName { get; set; }
+        public string MovementName { get; set; }
 
         public int Code { get; set; }
         public int OrderBy { get; set; }
