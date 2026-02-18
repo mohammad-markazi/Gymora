@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gymora.Service.Movement.Messaging;
 
 namespace Gymora.Service.Plan.Messaging
 {
@@ -16,7 +17,7 @@ namespace Gymora.Service.Plan.Messaging
         public string Pattern { get; set; }
         public string Description { get; set; }
         public bool Parent { get; set; }
-        public MovementModel Movement { get; set; }
+        public MovementViewModel Movement { get; set; }
  
     }
 }

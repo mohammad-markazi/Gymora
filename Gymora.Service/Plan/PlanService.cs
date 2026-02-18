@@ -1,6 +1,7 @@
 ﻿using Gymora.Database;
 using Gymora.Database.Entities;
 using Gymora.Service.Common;
+using Gymora.Service.Movement.Messaging;
 using Gymora.Service.Plan.Messaging;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
@@ -189,7 +190,11 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             {
                 Id = parent.Id,
                 MovementId = parent.MovementId,
-                Movement = parent.Movement,
+                Movement = new MovementViewModel()
+                {
+                    Id = parent.Movement.Id,
+                    Name = parent.Movement.Name
+                },
                 Code = parent.Id,
                 Parent = true,
                 OrderBy = 0,
@@ -208,7 +213,11 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
                 {
                     Id = children[i].Id,
                     MovementId = children[i].MovementId,
-                    Movement = children[i].Movement,
+                    Movement = new MovementViewModel()
+                    {
+                        Id = children[i].Movement.Id,
+                        Name = children[i].Movement.Name
+                    },
                     Code = parent.Id, 
                     Parent = false,
                     OrderBy = i + 1,
@@ -231,7 +240,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
             var parentReq = group.FirstOrDefault(x => x.Parent);
 
             PlanMovementModel parentModel = null;
-            if (parentReq != null)
+            if (parentReq != null && parentReq.MovementId!=0)
             {
                 parentModel = new PlanMovementModel
                 {
@@ -246,7 +255,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
 
             var childrenReqs = group.Where(x => x.Parent == false).OrderBy(x => x.OrderBy);
 
-            foreach (var childReq in childrenReqs)
+            foreach (var childReq in childrenReqs.Where(x=>x.MovementId!=0))
             {
                 var childModel = new PlanMovementModel
                 {
