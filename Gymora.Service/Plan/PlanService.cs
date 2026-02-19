@@ -167,10 +167,16 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
     {
         var coachId = authService.GetCurrentCoachId();
         var planDetail =await 
-            context.PlanDetailModels.SingleOrDefaultAsync(
+            context.PlanDetailModels.Include(x=>x.PlanMovements).SingleOrDefaultAsync(
                 x => x.Id == request.PlanDetailId && x.Plan.CreateCoachId == coachId, cancellationToken);
         if (planDetail is null)
             return ResponseFactory.Fail("برنامه زمانی یافت نشد");
+
+        if (planDetail.PlanMovements.Any())
+        {
+            context.PlanMovementModels.RemoveRange(planDetail.PlanMovements);
+            planDetail.PlanMovements = new List<PlanMovementModel>();
+        }
 
         var planMovements = MapRequestToModel(request.Movements, request.PlanDetailId);
         planDetail.PlanMovements = planMovements;
