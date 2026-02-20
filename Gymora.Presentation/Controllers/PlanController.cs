@@ -44,5 +44,17 @@ namespace Gymora.Presentation.Controllers
             return Ok(result);
         }
 
+        [HttpPost("Detail/Finalize")]
+        public async Task<IActionResult> FinalizePlanDetail(IdRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planService.FinalizePlanDetail(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpPost("Finalize")]
+        public async Task<IActionResult> FinalizePlan(IdRequest request, CancellationToken cancellationToken)
+        {   
+            var result = await planService.FinalizePlan(request, cancellationToken);
+            return Ok(result);
+        }
     }
 }

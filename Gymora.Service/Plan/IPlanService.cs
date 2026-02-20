@@ -17,6 +17,8 @@ namespace Gymora.Service.Plan
         Task<ApiResponse<PlanByIdViewModel>> GetByIdAsync(int id, CancellationToken cancellationToken);
 
         Task<ApiResponse> AddMovementToPlan(PlanDetailMovementRequest request, CancellationToken cancellationToken);
+        Task<ApiResponse> FinalizePlanDetail(IdRequest request, CancellationToken cancellationToken);
+        Task<ApiResponse> FinalizePlan(IdRequest request, CancellationToken cancellationToken);
 
     }
 }

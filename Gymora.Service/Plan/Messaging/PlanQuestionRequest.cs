@@ -14,3 +14,8 @@ public class PlanQuestionViewModel
     public string Answer { get; set; }
 
 }
+
+public class IdRequest
+{
+    public int Id { get; set; }
+}
