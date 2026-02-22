@@ -95,7 +95,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
         return ResponseFactory.Success();
     }
 
-    public async Task<ApiResponse<List<PlanViewModel>>> GetAllAsync(PlanStatus? status, CancellationToken cancellationToken)
+    public async Task<ApiResponse<List<PlanViewModel>>> GetAllAsync(PlanStatus? status,string? fullName, CancellationToken cancellationToken)
     {
         var coachId = authService.GetCurrentCoachId();
 
@@ -104,6 +104,8 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
 
         if (status is not null)
             models = models.Where(x => x.Status == status);
+        if (!string.IsNullOrWhiteSpace(fullName))
+           models= models.Where(x => x.FullName.Contains(fullName));
 
         var plans = await models.ToListAsync(cancellationToken);
 

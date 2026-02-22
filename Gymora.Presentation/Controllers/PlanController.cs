@@ -1,19 +1,21 @@
 ﻿using Gymora.Database.Entities;
 using Gymora.Service.Plan;
 using Gymora.Service.Plan.Messaging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gymora.Presentation.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PlanController(IPlanService planService) : ControllerBase
     {
         [Route("")]
         [HttpGet]
-        public async Task<IActionResult> GetAll(PlanStatus? status, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAll(PlanStatus? status,string? fullName, CancellationToken cancellationToken)
         {
-            var result = await planService.GetAllAsync(status, cancellationToken);
+            var result = await planService.GetAllAsync(status,fullName, cancellationToken);
             return Ok(result);
         }
 
