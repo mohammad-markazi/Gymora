@@ -182,23 +182,13 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
 
         var planMovements = MapRequestToModel(request.Movements, request.PlanDetailId);
         planDetail.PlanMovements = planMovements;
-       await context.SaveChangesAsync(cancellationToken);
+        planDetail.Complete = true;
+
+        await context.SaveChangesAsync(cancellationToken);
        return ResponseFactory.Success();
     }
 
-    public async Task<ApiResponse> FinalizePlanDetail(IdRequest request, CancellationToken cancellationToken)
-    {
-        var coachId = authService.GetCurrentCoachId();
-        var planDetail = await
-            context.PlanDetailModels.Include(x => x.PlanMovements).SingleOrDefaultAsync(
-                x => x.Id == request.Id && x.Plan.CreateCoachId == coachId, cancellationToken);
-        if (planDetail is null)
-            return ResponseFactory.Fail("برنامه زمانی یافت نشد");
 
-        planDetail.Complete = true;
-        await context.SaveChangesAsync(cancellationToken);
-        return ResponseFactory.Success();
-    }
 
     public async Task<ApiResponse> FinalizePlan(IdRequest request, CancellationToken cancellationToken)
     {
