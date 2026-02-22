@@ -18,8 +18,10 @@ public class MovementService(IGymoraDbContext context,IAuthService authService) 
             .Select(x => new MovementViewModel()
             {
                 Id = x.Id,
-                Name = x.Name
-            }).ToListAsync(cancellationToken);
+                Name = x.Name,
+                IsOwen = x.CreateCoachId!=null
+            }).OrderByDescending(x=>x.IsOwen).ToListAsync(cancellationToken);
+
         return ResponseFactory.Success(movements);
     }
 
