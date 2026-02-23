@@ -9,6 +9,7 @@ namespace Gymora.Service.Plan.Messaging
     public class PlanDetailMovementRequest
     {
         public int PlanDetailId { get; set; }
+        public bool Complete { get; set; }
         public List<AddPlanDetailMovementRequest> Movements { get; set; }
     }
     public class AddPlanDetailMovementRequest

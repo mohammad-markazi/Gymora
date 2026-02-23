@@ -182,7 +182,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
 
         var planMovements = MapRequestToModel(request.Movements, request.PlanDetailId);
         planDetail.PlanMovements = planMovements;
-        planDetail.Complete = true;
+        planDetail.Complete = request.Complete;
 
         await context.SaveChangesAsync(cancellationToken);
        return ResponseFactory.Success();
