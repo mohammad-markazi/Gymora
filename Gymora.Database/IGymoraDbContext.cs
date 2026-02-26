@@ -23,6 +23,12 @@ namespace Gymora.Database
         DbSet<PlanDetailModel> PlanDetailModels { get; set; }
         DbSet<PlanMovementModel> PlanMovementModels { get; set; }
 
+
+        DbSet<PlanTemplateModel> TemplateModels { get; set; }
+
+        DbSet<PlanTemplateDetailModel> TemplateDetailModels { get; set; }
+        DbSet<PlanTemplateMovementModel> TemplateMovementModels { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
 
     }

@@ -7,6 +7,7 @@ using Gymora.Database;
 using Gymora.Service.Common;
 using Gymora.Service.Movement;
 using Gymora.Service.Plan;
+using Gymora.Service.PlanTemplate;
 using Gymora.Service.Question;
 using Gymora.Service.User;
 using Gymora.Service.Utilities;
@@ -32,6 +33,7 @@ namespace Gymora.Service
             services.AddScoped<IVideoMovementService, VideoMovementService>();
             services.AddScoped<IFileUploader, FileUploader>();
             services.AddScoped<IPlanService,PlanService>();
+            services.AddScoped<IPlanTemplateService,PlanTemplateService>();
 
             return services;
         }

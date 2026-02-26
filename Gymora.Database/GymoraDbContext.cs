@@ -21,6 +21,9 @@ namespace Gymora.Database
         public DbSet<PlanQuestionModel> PlanQuestionModels { get; set; }
         public DbSet<PlanDetailModel> PlanDetailModels { get; set; }
         public DbSet<PlanMovementModel> PlanMovementModels { get; set; }
+        public DbSet<PlanTemplateModel> TemplateModels { get; set; }
+        public DbSet<PlanTemplateDetailModel> TemplateDetailModels { get; set; }
+        public DbSet<PlanTemplateMovementModel> TemplateMovementModels { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

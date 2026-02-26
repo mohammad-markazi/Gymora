@@ -102,7 +102,7 @@ public class PlanService(IGymoraDbContext context, IAuthService authService, IFi
         var models = context.PlanModels
             .Where(x => x.CreateCoachId == coachId).AsNoTracking();
 
-        if (status is not null)
+        if (status is not null && status!=PlanStatus.All)
             models = models.Where(x => x.Status == status);
         if (!string.IsNullOrWhiteSpace(fullName))
            models= models.Where(x => x.FullName.Contains(fullName));

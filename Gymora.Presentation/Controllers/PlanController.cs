@@ -1,6 +1,8 @@
 ﻿using Gymora.Database.Entities;
 using Gymora.Service.Plan;
 using Gymora.Service.Plan.Messaging;
+using Gymora.Service.PlanTemplate;
+using Gymora.Service.PlanTemplate.Messaging;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +11,7 @@ namespace Gymora.Presentation.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class PlanController(IPlanService planService) : ControllerBase
+    public class PlanController(IPlanService planService,IPlanTemplateService planTemplateService) : ControllerBase
     {
         [Route("")]
         [HttpGet]
@@ -52,5 +54,48 @@ namespace Gymora.Presentation.Controllers
             var result = await planService.FinalizePlan(request, cancellationToken);
             return Ok(result);
         }
+
+        #region Template
+        [HttpPost("Template")]
+        public async Task<IActionResult> CreateTemplate(CreateTemplateRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.CreateAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        
+        [HttpGet("Template")]
+        public async Task<IActionResult> GetAllTemplate(CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.GetAllAsync(cancellationToken);
+            return Ok(result);
+        }
+        
+        [HttpDelete("Template/{id:int}")]
+        public async Task<IActionResult> DeleteTemplate(int id, CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.DeleteAsync(id,cancellationToken);
+            return Ok(result);
+        }
+        [HttpPut("Template")]
+        public async Task<IActionResult> UpdateTemplate(EditTemplateRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.UpdateAsync(request, cancellationToken);
+            return Ok(result);
+        }
+        [HttpGet("Template/{id:int}")]
+        public async Task<IActionResult> GetTemplateById([FromRoute]int id,CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.GetByIdAsync(id, cancellationToken);
+            return Ok(result);
+        }
+        
+        [HttpPost("Template/Override")]
+        public async Task<IActionResult> OverrideIntoPlan(OverrideIntoPlanRequest request, CancellationToken cancellationToken)
+        {
+            var result = await planTemplateService.OverrideIntoPlan(request, cancellationToken);
+            return Ok(result);
+        }
+
+        #endregion
     }
 }

@@ -32,7 +32,8 @@ namespace Gymora.Database.Entities
     public enum PlanStatus : byte
     {
         Unknown=0,
-        Complete=1
+        Complete=1,
+        All=2
     }
 
     public enum WeakMuscle : short
